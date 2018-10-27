@@ -105,6 +105,8 @@ function bindFunction(fn) {
     return function() {
         return fn.apply(null, args);
     };
+    // return () => args[0].apply(null, args.slice(1));
+    // альтернативный вариант в 1 строку, если мы в качестве параметров функwии указываем "...args"
 }
 
 export {
