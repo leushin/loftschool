@@ -12,9 +12,7 @@
 
  Другими словами: функция должна возвращать в неизменном виде то, что поступает ей на вход
  */
-function returnFirstArgument(data) {
-    return data;
-}
+const returnFirstArgument = data => data;
 
 /*
  Задание 2:
@@ -30,9 +28,7 @@ function returnFirstArgument(data) {
  Пример:
    sumWithDefaults(10) вернет 110
  */
-function sumWithDefaults(a, b = 100) {
-    return a + b;
-}
+const sumWithDefaults = (a, b = 100) => a + b;
 
 /*
  Задание 3:
@@ -42,9 +38,7 @@ function sumWithDefaults(a, b = 100) {
  Пример:
    returnFnResult(() => 'привет') вернет 'привет'
  */
-function returnFnResult(fn) {
-    return fn();
-}
+const returnFnResult = fn => fn();
 
 /*
  Задание 4:
@@ -59,10 +53,10 @@ function returnFnResult(fn) {
    console.log(f()); // выведет 12
    console.log(f()); // выведет 13
  */
-function returnCounter(number = 0) {
-    return function F() {
-        return ++number;
-    }
+const returnCounter = (number = 0) => {
+    const F = () => ++number;
+
+    return F;
 }
 
 /*
@@ -74,15 +68,7 @@ function returnCounter(number = 0) {
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray() {
-    var arr = [];
-
-    for (var i = 0; i < arguments.length; i++) {
-        arr[i] = arguments[i];
-    }
-
-    return arr;
-}
+const returnArgumentsArray = (...args) => args;
 
 /*
  Задание 6 *:
@@ -99,15 +85,7 @@ function returnArgumentsArray() {
 
    console.log(newSum()) выведет 6
  */
-function bindFunction(fn) {
-    var args = [].slice.call(arguments, 1);
-
-    return function() {
-        return fn.apply(null, args);
-    };
-    // return () => args[0].apply(null, args.slice(1));
-    // альтернативный вариант в 1 строку, если мы в качестве параметров функwии указываем "...args"
-}
+const bindFunction = (fn, ...args) => fn.bind(null, ...args);
 
 export {
     returnFirstArgument,
