@@ -7,6 +7,9 @@
  Посмотрите как работает forEach и повторите это поведение для массива, который будет передан в параметре array
  */
 function forEach(array, fn) {
+    for (let i = 0; i < array.length; i++) {
+        fn(array[i], i, array);
+    }
 }
 
 /*
@@ -16,6 +19,13 @@ function forEach(array, fn) {
  Посмотрите как работает map и повторите это поведение для массива, который будет передан в параметре array
  */
 function map(array, fn) {
+    let data = [];
+
+    for (let i = 0; i < array.length; i++) {
+        data.push(fn(array[i], i, array));
+    }
+
+    return data;
 }
 
 /*
@@ -25,6 +35,16 @@ function map(array, fn) {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 function reduce(array, fn, initial) {
+    let i = initial ? 0 : 1,
+        accumulator = initial ? initial : array[0],
+        currentValue = initial ? array[0] : array[1];
+
+    for (i; i < array.length; i++) {
+        currentValue = array[i];
+        accumulator = fn(accumulator, currentValue, i, array);
+    }
+
+    return accumulator;
 }
 
 /*
@@ -35,8 +55,7 @@ function reduce(array, fn, initial) {
  Пример:
    upperProps({ name: 'Сергей', lastName: 'Петров' }) вернет ['NAME', 'LASTNAME']
  */
-function upperProps(obj) {
-}
+const upperProps = obj => Object.keys(obj).map(item => item.toUpperCase());
 
 /*
  Задание 5 *:
@@ -44,7 +63,11 @@ function upperProps(obj) {
  Напишите аналог встроенного метода slice для работы с массивами
  Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
-function slice(array, from, to) {
+function slice(array, from = 0, to = array.length) {
+    from = from >= 0 ? from : array.length + from;
+    to = to >=0 ? to : array.length + to;
+    
+    return array.filter((item, i) => i >= from && i < to);
 }
 
 /*
@@ -54,6 +77,13 @@ function slice(array, from, to) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    return new Proxy(obj, {
+        set(target, prop, value) {
+            target[prop] = value * value;
+
+            return true;
+        }
+    });
 }
 
 export {
