@@ -97,6 +97,6 @@ addDivButton.addEventListener('click', function() {
     homeworkContainer.appendChild(div);
 });
 
-//export {
-//    createDiv
-//};
+export {
+    createDiv
+};
