@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <style>
+            body, html { 
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            #homework-container {
+                position: relative;
+                height: 100%;
+            }
+            #addDiv {
+                position: absolute;
+                left: 24px;
+                top: 24px;
+                z-index: 9;
+            }
+            .draggable-div {
+                cursor: move;
+            }
+            [draggable] {
+                user-select: none;
+            }
+        </style>
+
+        <button id="addDiv">Add</button>
+        <div id="homework-container">
+            <button id="addDiv">Add</button>
+        </div>
+        
+        <script src="./dnd.js"></script>
+    </body>
+</html>

@@ -26,7 +26,26 @@ const homeworkContainer = document.querySelector('#homework-container');
    const newDiv = createDiv();
    homeworkContainer.appendChild(newDiv);
  */
+
+const getRandom = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
 function createDiv() {
+    let element = document.createElement('div'),
+        clientWidth = document.documentElement.clientWidth,
+        clientHeight = document.documentElement.clientHeight;
+
+    element.style.position = 'absolute';
+    element.style.width = `${getRandom(100, clientWidth - 100)}px`;
+    element.style.height = `${getRandom(100, clientHeight - 100)}px`;
+    element.style.top = `${getRandom(0, clientHeight - parseInt(element.style.height))}px`;
+    element.style.left = `${getRandom(0, clientWidth - parseInt(element.style.width))}px`;
+    element.style.background = `rgb(${getRandom(0, 255)}, ${getRandom(0, 255)}, ${getRandom(0, 255)})`;
+
+    element.className = 'draggable-div';
+    element.dataset.id = new Date().getTime();
+    element.setAttribute('draggable', true);
+
+    return element;
 }
 
 /*
@@ -37,8 +56,36 @@ function createDiv() {
    homeworkContainer.appendChild(newDiv);
    addListeners(newDiv);
  */
-function addListeners(target) {
+function addListeners() {
+    homeworkContainer.addEventListener('dragstart', event => {
+        if (event.target.className !== 'draggable-div') {
+            return false;
+        }
+        event.target.style.opacity = 0.4;
+        event.dataTransfer.effectAllowed='move';
+        event.dataTransfer.setData('id', event.target.dataset.id);
+        event.dataTransfer.setData('shiftX', event.pageX - parseInt(event.target.style.left));
+        event.dataTransfer.setData('shiftY', event.pageY - parseInt(event.target.style.top));
+    });
+
+    homeworkContainer.addEventListener('dragover', event => {
+        event.preventDefault();
+    });
+
+    homeworkContainer.addEventListener('drop', event => {
+        let element = document.querySelector(`[data-id="${event.dataTransfer.getData('id')}"]`),
+            left = event.pageX - event.dataTransfer.getData('shiftX'),
+            top = event.pageY - event.dataTransfer.getData('shiftY');
+
+        event.preventDefault();
+        element.style.opacity = 1;
+        element.style.top = `${top}px`;
+        element.style.left = `${left}px`;
+    });
 }
+
+// назначить обработчики событий мыши для реализации D&D
+addListeners();
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
 
@@ -48,12 +95,8 @@ addDivButton.addEventListener('click', function() {
 
     // добавить на страницу
     homeworkContainer.appendChild(div);
-    // назначить обработчики событий мыши для реализации D&D
-    addListeners(div);
-    // можно не назначать обработчики событий каждому div в отдельности, а использовать делегирование
-    // или использовать HTML5 D&D - https://www.html5rocks.com/ru/tutorials/dnd/basics/
 });
 
-export {
-    createDiv
-};
+//export {
+//    createDiv
+//};
