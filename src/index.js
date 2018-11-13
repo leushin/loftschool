@@ -1,3 +1,5 @@
+import { resolve } from "path";
+
 /* ДЗ 6 - Асинхронность и работа с сетью */
 
 /*
@@ -8,8 +10,7 @@
  Пример:
    delayPromise(3) // вернет promise, который будет разрешен через 3 секунды
  */
-function delayPromise(seconds) {
-}
+const delayPromise = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000));
 
 /*
  Задание 2:
@@ -25,6 +26,13 @@ function delayPromise(seconds) {
    loadAndSortTowns().then(towns => console.log(towns)) // должна вывести в консоль отсортированный массив городов
  */
 function loadAndSortTowns() {
+    return new Promise((resolve, reject) => {
+        fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
+            .then(response => response.json())
+            .then(cities => cities.sort((a, b) => a.name >= b.name ? 1 : -1))
+            .then(cities => resolve(cities))
+            .catch(error => reject(error));
+    });
 }
 
 export {
