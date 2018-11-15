@@ -37,6 +37,13 @@ const homeworkContainer = document.querySelector('#homework-container');
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
 function loadTowns() {
+    return new Promise((resolve, reject) => {
+        fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
+            .then(response => response.json())
+            .then(cities => cities.sort((a, b) => a.name >= b.name ? 1 : -1))
+            .then(cities => resolve(cities))
+            .catch(error => reject(error));
+    });
 }
 
 /*
@@ -50,8 +57,7 @@ function loadTowns() {
    isMatching('Moscow', 'SCO') // true
    isMatching('Moscow', 'Moscov') // false
  */
-function isMatching(full, chunk) {
-}
+const isMatching = (full, chunk) => new RegExp(chunk, 'i').test(full);
 
 /* Блок с надписью "Загрузка" */
 const loadingBlock = homeworkContainer.querySelector('#loading-block');
@@ -63,8 +69,40 @@ const filterInput = homeworkContainer.querySelector('#filter-input');
 const filterResult = homeworkContainer.querySelector('#filter-result');
 
 filterInput.addEventListener('keyup', function() {
-    // это обработчик нажатия кливиш в текстовом поле
+    if (!filterInput.value) {
+        filterResult.innerHTML = ''
+        
+        return false;
+    }
+
+    let matches = data.filter(city => isMatching(city.name, filterInput.value));
+
+    filterResult.innerHTML = matches.reduce((acc, cur) => {
+        acc += `<div>${cur.name}</div>`;
+
+        return acc;
+    }, '');
 });
+
+let data;
+
+(function onInit() {
+    loadTowns()
+        .then(cities => {
+            data = cities;
+            loadingBlock.style.display = 'none';
+            filterBlock.style.display = 'block';
+        }).catch(() => {
+            let reloadButton = document.createElement('button');
+
+            reloadButton.innerText = 'Повторить';
+            reloadButton.style.margin = '0 20px';
+            reloadButton.addEventListener('click', onInit);
+
+            loadingBlock.innerText = 'Не удалось загрузить города';
+            loadingBlock.append(reloadButton);
+        });
+})();
 
 export {
     loadTowns,
