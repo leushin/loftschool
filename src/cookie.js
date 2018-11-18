@@ -48,13 +48,14 @@ const isMatching = (full, chunk) => new RegExp(chunk, 'i').test(full);
 const initTable = () => {
     if (document.cookie) {
         listTable.innerHTML = document.cookie.split('; ').map((cookie) => {
-            let cookieArray = cookie.split('=');
+            let filter = filterNameInput.value,
+                [name, value] = cookie.split('=');
             
-            if (filterNameInput.value && !isMatching(cookieArray[0], filterNameInput.value)) {
+            if (filter && !isMatching(name, filter) && !isMatching(value, filter)) {
                 return '';
             }
 
-            return `<tr><td>${cookieArray[0]}</td><td>${cookieArray[1]}</td><td><button>Удалить</button></td></tr>`;
+            return `<tr><td>${name}</td><td>${value}</td><td><button>Удалить</button></td></tr>`;
         }).join('');
     } else {
         listTable.innerHTML = '';
