@@ -43,10 +43,40 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
+const isMatching = (full, chunk) => new RegExp(chunk, 'i').test(full);
+
+const initTable = () => {
+    if (document.cookie) {
+        listTable.innerHTML = document.cookie.split('; ').map((cookie) => {
+            let cookieArray = cookie.split('=');
+            
+            if (filterNameInput.value && !isMatching(cookieArray[0], filterNameInput.value)) {
+                return '';
+            }
+
+            return `<tr><td>${cookieArray[0]}</td><td>${cookieArray[1]}</td><td><button>Удалить</button></td></tr>`;
+        }).join('');
+    } else {
+        listTable.innerHTML = '';
+    }
+}
+
+initTable();
+
 filterNameInput.addEventListener('keyup', function() {
-    // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    initTable();
 });
 
 addButton.addEventListener('click', () => {
-    // здесь можно обработать нажатие на кнопку "добавить cookie"
+    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+    initTable();
+});
+
+listTable.addEventListener('click', (event) => {
+    if (event.target.nodeName === 'BUTTON') {
+        let cookieSelected = event.target.parentNode.parentNode.querySelector('td:first-of-type').innerText;
+
+        document.cookie = `${cookieSelected}=null; expires=${new Date(0).toUTCString()}`;
+        initTable();
+    }
 });
